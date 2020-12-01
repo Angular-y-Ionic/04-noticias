@@ -13,7 +13,7 @@ const headers = new HttpHeaders({
   providedIn: 'root'
 })
 export class NoticiasService {
-
+  headLinesPage: number = 0;
   constructor(
     private http: HttpClient
   ) { }
@@ -25,9 +25,10 @@ export class NoticiasService {
 
 
   getTopHeadLines() {
-    return this.ejecutarQuery<RespuestaTopHeadlines>('/top-headlines?country=us');
+    this.headLinesPage++;
+    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&page=${this.headLinesPage}`);
   }
-  getTopHeadLinesCategoria(categoria: string) {
-    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&category=${categoria}`);
+  getTopHeadLinesCategoria(categoria: string, page: number) {
+    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&category=${categoria}&page=${page}`);
   }
 }
