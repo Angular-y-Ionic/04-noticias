@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Article } from 'src/app/interfaces/interfaces';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, ToastController } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { DataLocalService } from 'src/app/services/data-local.service';
 
@@ -18,12 +18,23 @@ export class NoticiaComponent implements OnInit {
     private iab: InAppBrowser,
     private actionSheetCtrl: ActionSheetController,
     private socialSharing: SocialSharing,
-    private dataLocalService: DataLocalService) { }
+    private dataLocalService: DataLocalService,
+    private toastCtrl: ToastController) { }
 
   ngOnInit() { }
 
   abrirNoticia() {
     const browser = this.iab.create(this.noticia.url, '_system');
+  }
+  async presentToast(msg: string) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 800,
+      translucent:true,
+      mode:'ios',
+      position: 'top',
+    });
+    toast.present();
   }
   async lanzarMenu() {
     let guardarBorrarBtn;
@@ -34,6 +45,7 @@ export class NoticiaComponent implements OnInit {
         cssClass: 'action-dark',
         handler: () => {
           this.dataLocalService.deleteNoticia(this.noticia);
+          this.presentToast('Noticia borrada..');
         }
       };
     }
@@ -44,6 +56,7 @@ export class NoticiaComponent implements OnInit {
         cssClass: 'action-dark',
         handler: () => {
           this.dataLocalService.postNoticia(this.noticia);
+          this.presentToast('Noticia agregada a favoritos..');
         }
       };
     }
